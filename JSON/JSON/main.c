@@ -30,18 +30,8 @@ typedef struct JSON {
 }JSON;
 
 void Parser(int size, int start, char * buff, JSON *json);
-
+void freeJSON (JSON *json);
 int tokenIndex = 0;
-
-void freeJSON (JSON *json)
-{
-    for (int i = 0; i < TOKEN_COUNT; i++)            // 토큰 개수만큼 반복
-    {
-        if (json->tokenSAVE[i].type == STRING)    // 토큰 종류가 문자열이면
-            free(json->tokenSAVE[i].string);
-        
-    }// 동적 메모리 해제
-}
 
 int main(int argc, char* argv[]) {
     JSON json = { 0, };
@@ -53,14 +43,14 @@ int main(int argc, char* argv[]) {
     }
     
     
-    // 옵션 개수 출력
-    printf("%d 개의 argv\n\n", argc - 1);
-    
+//    // 옵션 개수 출력
+//    printf("%d 개의 argv\n\n", argc - 1);
+//
     
     // 옵션 배열의 요소들을 하나씩 출력
-    for (int i = 1; i < argc; i++)
-        printf("argv[%d] = %s\n", i, argv[i]);
-    
+//    for (int i = 1; i < argc; i++)
+//        printf("argv[%d] = %s\n", i, argv[i]);
+//
     
     FILE *fp = fopen(argv[1], "r");
     //char buff[1024];
@@ -74,6 +64,10 @@ int main(int argc, char* argv[]) {
     }
     
     printf("The File name is = \"%s\" \n\n", argv[1]);
+    
+    printf("\n\n****** ALL TOKENS *****\n");
+    printf("\n\nUNDEFINED = 0\nOBJECT = 1\nARRAY = 2\nSTRING = 3\nPRIMITIVE = 4\n\n");
+    printf("\n*********************\n\n");
     
     while((d = fgetc(fp)) != EOF){
         //buff[n] = d;
@@ -242,12 +236,12 @@ void Parser(int size, int startp, char *buff, JSON *json)
                 memset(json->tokenSAVE[tokenIndex].string, 0, (token.end - token.start + 1) + 1);
                 
                 memcpy(json->tokenSAVE[tokenIndex].string, start, (token.end - token.start ));
-                printf("%d: %s\n",tokenIndex, json->tokenSAVE[tokenIndex].string);
+                //printf("%d: %s\n",tokenIndex, json->tokenSAVE[tokenIndex].string);
+                printf("[%d] %s (size=%d, %d~%d, %d)\n",tokenIndex+1, json->tokenSAVE[tokenIndex].string, token.size,token.start,token.end,token.type);
                 
                 tokenIndex++; // 토큰 인덱스 증가
                 
-                // printf(" : ");
-                // printf(" (size : %d , range : %d ~%d , type : %d) \n",token.size , token.start, token.end, token.type);
+                //freeJSON(json);
                 
                 token.size = 0;
                 break;
@@ -265,7 +259,7 @@ void Parser(int size, int startp, char *buff, JSON *json)
                     if(objNested == 0) break;
                     j++;
                 }
-                token.end = j;
+                token.end = j+1;
                 objSize = (j - i);
                 char *nestObj = (char*) malloc(objSize * sizeof(char));
                 
@@ -273,23 +267,33 @@ void Parser(int size, int startp, char *buff, JSON *json)
                     nestObj[s] = buff[i++];
                 }
                 
-                // for(int a = token.start; a<=token.end; a++)
-                // {
-                //     // printf("%c",buff[a]);
-                //
-                // }
                 
-                // printf(" (size : %d ,range : %d ~%d , type : %d) \n", token.size , token.start, token.end, token.type);
+                
+                start = &buff[token.start];
+                // 문자열 길이 + NULL 공간만큼 메모리 할당
+                json->tokenSAVE[tokenIndex].string = malloc((token.end - token.start + 1) + 1);
+                // 할당한 메모리를 0으로 초기화
+                memset(json->tokenSAVE[tokenIndex].string, 0, (token.end - token.start + 1) + 1);
+                
+                memcpy(json->tokenSAVE[tokenIndex].string, start, (token.end - token.start ));
+                //printf("%d: %s\n",tokenIndex, json->tokenSAVE[tokenIndex].string);
+                printf("[%d] %s (size=%d, %d~%d, %d)\n",tokenIndex+1, json->tokenSAVE[tokenIndex].string, token.size,token.start,token.end,token.type);
+                
+                tokenIndex++;
+                //
+                //                printf(" (size : %d ,range : %d ~%d , type : %d) \n", token.size , token.start, token.end, token.type);
+                
+               //freeJSON(json);
                 
                 token.size = 0;
                 
-                Parser(token.start + objSize, token.start, nestObj, json);
+                Parser(token.start + objSize - 1, token.start, nestObj, json);
                 
                 
                 break;
                 
             case  '[' :
-                token.size ++;
+                //token.size ++;
                 token.start = i ;
                 token.type = ARRAY;
                 j = i;
@@ -302,7 +306,7 @@ void Parser(int size, int startp, char *buff, JSON *json)
                     j++;
                 }
                 
-                token.end = j;
+                token.end = j+1;
                 arraySize = (j - i);
                 char *array = (char*) malloc(arraySize * sizeof(char));
                 
@@ -316,13 +320,21 @@ void Parser(int size, int startp, char *buff, JSON *json)
                     
                 }
                 
-                for(int a = token.start; a <= token.end; a++)
-                {
-                    printf("%c",buff[a]);
-                    
-                }
                 
-                printf(" (size : %d ,range : %d ~%d , type : %d) \n", token.size , token.start, token.end, token.type);
+                
+                start = &buff[token.start];
+                // 문자열 길이 + NULL 공간만큼 메모리 할당
+                json->tokenSAVE[tokenIndex].string = malloc((token.end - token.start + 1) + 1);
+                // 할당한 메모리를 0으로 초기화
+                memset(json->tokenSAVE[tokenIndex].string, 0, (token.end - token.start + 1) + 1);
+                
+                memcpy(json->tokenSAVE[tokenIndex].string, start, (token.end - token.start ));
+                //printf("%d: %s\n",tokenIndex, json->tokenSAVE[tokenIndex].string);/
+                printf("[%d] %s (size=%d, %d~%d, %d)\n",tokenIndex+1, json->tokenSAVE[tokenIndex].string, token.size,token.start,token.end,token.type);
+                
+                tokenIndex++;
+                //freeJSON(json);
+                
                 
                 token.size = 0; //
                 
@@ -394,4 +406,14 @@ void Parser(int size, int startp, char *buff, JSON *json)
     }
     
     
+}
+
+void freeJSON (JSON *json)
+{
+    for (int i = 0; i < TOKEN_COUNT; i++)            // 토큰 개수만큼 반복
+    {
+        if (json->tokenSAVE[i].type == STRING)    // 토큰 종류가 문자열이면
+            free(json->tokenSAVE[i].string);
+        
+    }// 동적 메모리 해제
 }

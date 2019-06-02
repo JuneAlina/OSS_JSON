@@ -1,0 +1,84 @@
+{
+    "room310": [
+        {
+            "title": "Deep Learning Open Source Project",
+            "students": [
+                "권예성","윤동휘","김경협"
+            ],
+            "prof": "김인중"
+        },
+        {
+            "title": "Deep learning-based Speech Enhancement",
+            "students": [
+                "최진","박참진"
+            ],
+            "prof": "김인중"
+        },
+        {
+            "title": "딥러닝을 이용한 Neural Style Transfer",
+            "students": [
+                "김도현", "기윤호","윤재원"
+            ],
+            "prof": "조성배"
+        },
+        {
+            "title": "가상 프로필을 이용한 채팅 어플리케이션",
+            "students": [
+                "배하람", "전영민"
+            ],
+            "prof": "조성배"
+        },
+        {
+            "title": "Bloc pattern 기반 크로스플랫폼 어플리케이션 개발",
+            "students": [
+                "임푸름", "정예닮", "홍성은"
+            ],
+            "prof": "조성배"
+        }
+        {
+            "title": "함께 달리는 SPRINT 모바일 어플리케이션 개발",
+            "students": [
+                "이용호", "김도진", "윤한규"
+            ],
+            "prof": "조성배"
+        },
+        {
+            "title": "Tensorflow.js를 활용한 크롬 확장 프로그램 개발",
+            "students": [
+                "여대엽", "류용환", "윤기쁨"
+            ],
+            "prof": "조성배"
+        },
+        {
+            "title": "여행 동행 어플리케이션 Trabuddy",
+            "students": [
+                "김재형", "이기혁", "김상화"
+            ],
+            "prof": "조성배"
+        }
+
+    ],
+    "room311": [
+        {
+            "title": "Network Intrusion Detection Using LSTM",
+            "students": [
+                "이청준", "금락운", "권혁민"
+            ],
+            "prof": "조성배"
+        },
+        {
+            "title": "딥러닝 기반의 chit-chat 모델",
+            "students": [
+                "정규식", "오재영"
+            ],
+            "prof": "조성배"
+        },
+        {
+            "title": "Adaptive Echo-canceling Headset Design",
+            "students": [
+                "천수민", "김찬영", "조명현"
+            ],
+            "prof": "김영식"
+        }
+    ]
+}
