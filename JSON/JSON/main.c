@@ -1,3 +1,6 @@
+//"/Users/seojunpyo/Documents/project/19OSS/OSS-GROUP8-PROJECT/OSSproj/OSSproj/capstonetest.json"
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -43,14 +46,14 @@ int main(int argc, char* argv[]) {
     }
     
     
-//    // 옵션 개수 출력
-//    printf("%d 개의 argv\n\n", argc - 1);
-//
+    //    // 옵션 개수 출력
+    //    printf("%d 개의 argv\n\n", argc - 1);
+    //
     
     // 옵션 배열의 요소들을 하나씩 출력
-//    for (int i = 1; i < argc; i++)
-//        printf("argv[%d] = %s\n", i, argv[i]);
-//
+    //    for (int i = 1; i < argc; i++)
+    //        printf("argv[%d] = %s\n", i, argv[i]);
+    //
     
     FILE *fp = fopen(argv[1], "r");
     //char buff[1024];
@@ -102,7 +105,6 @@ void Parser(int size, int startp, char *buff, JSON *json)
     int objSize = 0;
     int arraySize = 0;
     int arrayNested = 0;
-  //  int A = 0;
     
     i = startp;
     //
@@ -245,6 +247,8 @@ void Parser(int size, int startp, char *buff, JSON *json)
                 //freeJSON(json);
                 
                 token.size = 0;
+                
+                
                 break;
                 
             case '{':
@@ -252,23 +256,30 @@ void Parser(int size, int startp, char *buff, JSON *json)
                 token.start = i ;
                 token.type = OBJECT;
                 j = i;
-                while(buff[j] != '}'  ){
+                do{
                     
                     if(buff[j] ==':' && buff[j-1] == '"' ) token.size ++;
                     if(buff[j] == '{') objNested++;
                     if(buff[j] == '}') objNested--;
+                    
                     if(objNested == 0) break;
+                    
                     j++;
-                }
+                    
+                    
+                    
+                    
+                }while(objNested != 0 );
+                
+                
                 token.end = j+1;
                 objSize = (j - i);
-                
                 char *nestObj = (char*) malloc(objSize * sizeof(char));
                 
                 for(int s = token.start ; s <= token.end; s++){
                     nestObj[s] = buff[i++];
                 }
-
+                
                 start = &buff[token.start];
                 // 문자열 길이 + NULL 공간만큼 메모리 할당
                 json->tokenSAVE[tokenIndex].string = malloc((token.end - token.start + 1) + 1);
@@ -283,7 +294,7 @@ void Parser(int size, int startp, char *buff, JSON *json)
                 //
                 //                printf(" (size : %d ,range : %d ~%d , type : %d) \n", token.size , token.start, token.end, token.type);
                 
-               //freeJSON(json);
+                //freeJSON(json);
                 
                 token.size = 0;
                 
@@ -293,26 +304,16 @@ void Parser(int size, int startp, char *buff, JSON *json)
                 break;
                 
             case  '[' :
-                //token.size ++;
                 
                 token.start = i ;
                 token.type = ARRAY;
                 j = i;
-//                while(buff[j] != ']'){
-//
-//                    //if(buff[j] ==':' && buff[j-1] == '"' ) token.size ++;
-//                    if(buff[j] == '[') arrayNested++;
-//                    if(buff[j] == ']') arrayNested--;
-//                    if(arrayNested == 0) break;
-//                    j++;
-//                }
-//
                 do{
-                    //token.size ++;
+                    
+                    //if(buff[j] ==':' && buff[j-1] == '"' ) token.size ++;
                     if(buff[j] == '[') arrayNested++;
                     if(buff[j] == ']') arrayNested--;
-                    //if(arrayNested == 0) break;
-                    if(buff[j] == '{') token.size ++;
+                    if(arrayNested == 0) break;
                     j++;
                     
                 }while(arrayNested != 0 );
@@ -321,13 +322,23 @@ void Parser(int size, int startp, char *buff, JSON *json)
                 arraySize = (j - i);
                 char *array = (char*) malloc(arraySize * sizeof(char));
                 
-                for(int s = token.start ; s <= token.end; s++){
+                int objInArr = 0;
+                
+                for(int s = token.start ; s < token.end; s++){
                     
-                    array[s] = buff[token.start+1];
+                    array[s] = buff[i++];
                     
-                    if(array[s] == ',' && array[s-1] == '}') token.size++;
-                    if(array[s] == ',' && array[s-1] == '"') token.size++;
-                    if(array[s] == ',' && array[s-1] == ']') token.size++;
+                    if(array[s] == '{'){
+                        objInArr ++;
+                        token.size++;
+                    }
+                    
+                    if(array[s] == '}'){
+                        objInArr --;
+                    }
+                    
+                    else if(array[s] == ',' && array[s-1] == '"' && objInArr == 0) token.size++;
+                    else if(array[s] == ',' && array[s-1] == ']' && objInArr == 0) token.size++;
                     
                 }
                 
