@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
     Parser(n, start , buff, &json);
     fclose(fp);
     free(buff);
-//    freeJSON(&json);
+    freeJSON(&json);
     
     return 0;
 }
@@ -107,7 +107,7 @@ void Parser(int size, int startp, char *buff, JSON *json)
     //
     
     if(buff[i] != '{'){
-        printf("in if \n");
+        //printf("in if \n");
         return;
     }
     i++;
