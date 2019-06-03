@@ -1,5 +1,5 @@
 {
-    "room310": [
+    "room310": {
         {
             "title": "Deep Learning Open Source Project",
             "students": [
@@ -57,8 +57,8 @@
             "prof": "조성배"
         }
 
-    ],
-    "room311": [
+        },
+    "room311": {
         {
             "title": "Network Intrusion Detection Using LSTM",
             "students": [
@@ -80,5 +80,5 @@
             ],
             "prof": "김영식"
         }
-    ]
+    }
 }

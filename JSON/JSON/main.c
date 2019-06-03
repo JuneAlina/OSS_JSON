@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define TOKEN_COUNT 1024
-
+/////start
 int start = 0;
 
 typedef enum {
@@ -88,7 +88,7 @@ int main(int argc, char* argv[]) {
     Parser(n, start , buff, &json);
     fclose(fp);
     free(buff);
-    freeJSON(&json);
+//    freeJSON(&json);
     
     return 0;
 }
