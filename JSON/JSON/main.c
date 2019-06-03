@@ -102,6 +102,7 @@ void Parser(int size, int startp, char *buff, JSON *json)
     int objSize = 0;
     int arraySize = 0;
     int arrayNested = 0;
+  //  int A = 0;
     
     i = startp;
     //
@@ -261,14 +262,13 @@ void Parser(int size, int startp, char *buff, JSON *json)
                 }
                 token.end = j+1;
                 objSize = (j - i);
+                
                 char *nestObj = (char*) malloc(objSize * sizeof(char));
                 
                 for(int s = token.start ; s <= token.end; s++){
                     nestObj[s] = buff[i++];
                 }
-                
-                
-                
+
                 start = &buff[token.start];
                 // 문자열 길이 + NULL 공간만큼 메모리 할당
                 json->tokenSAVE[tokenIndex].string = malloc((token.end - token.start + 1) + 1);
@@ -294,17 +294,28 @@ void Parser(int size, int startp, char *buff, JSON *json)
                 
             case  '[' :
                 //token.size ++;
+                
                 token.start = i ;
                 token.type = ARRAY;
                 j = i;
-                while(buff[j] != ']'  ){
-                    
-                    //if(buff[j] ==':' && buff[j-1] == '"' ) token.size ++;
+//                while(buff[j] != ']'){
+//
+//                    //if(buff[j] ==':' && buff[j-1] == '"' ) token.size ++;
+//                    if(buff[j] == '[') arrayNested++;
+//                    if(buff[j] == ']') arrayNested--;
+//                    if(arrayNested == 0) break;
+//                    j++;
+//                }
+//
+                do{
+                    //token.size ++;
                     if(buff[j] == '[') arrayNested++;
                     if(buff[j] == ']') arrayNested--;
-                    if(arrayNested == 0) break;
+                    //if(arrayNested == 0) break;
+                    if(buff[j] == '{') token.size ++;
                     j++;
-                }
+                    
+                }while(arrayNested != 0 );
                 
                 token.end = j+1;
                 arraySize = (j - i);
@@ -312,7 +323,7 @@ void Parser(int size, int startp, char *buff, JSON *json)
                 
                 for(int s = token.start ; s <= token.end; s++){
                     
-                    array[s] = buff[i++];
+                    array[s] = buff[token.start+1];
                     
                     if(array[s] == ',' && array[s-1] == '}') token.size++;
                     if(array[s] == ',' && array[s-1] == '"') token.size++;
